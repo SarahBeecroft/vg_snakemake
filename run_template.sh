@@ -22,7 +22,7 @@ conda activate ${MYSOFTWARE}/miniforge3/envs/snakemake1
 export XDG_CACHE_HOME=${MYSCRATCH}/vg_snakemake/.cache
 
 #Unlock working directory
-snakemake -s ${MYSCRATCH}/vg_snakemake/workflow/Snakefile --cores 1 --unlock
+snakemake -s ${MYSCRATCH}/vg_snakemake/workflow/Snakefile --cores 4 --unlock
 
 #Run snakemake
 snakemake -s ${MYSCRATCH}/vg_snakemake/workflow/Snakefile --configfile ${MYSCRATCH}/vg_snakemake/config/config.hprc.yaml --profile ${MYSCRATCH}/vg_snakemake/setonix_profile --use-singularity -p map_surject_reads --rerun-incomplete --rerun-triggers mtime
