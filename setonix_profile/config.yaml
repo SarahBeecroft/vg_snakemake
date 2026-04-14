@@ -31,7 +31,7 @@ set-resources:
   - realign_bam:mem_mb=64000
   - sample_haplotypes:runtime=30
   - sample_haplotypes:mem_mb=80000
-  - index_distance:runtime=60
+  - index_distance:runtime=40
   - index_distance:mem_mb=90000
   - index_minimizer:runtime=20
   - sv_call_manta:runtime=120
@@ -71,3 +71,4 @@ set-threads:
   - index_bam_tmp=4
   - extract_ref_fasta=1
   - index_fasta=2
+  - index_distance=16
