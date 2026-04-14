@@ -3,17 +3,18 @@ cores: 24 # reduced
 latency-wait: 60 #increase latency wait
 reason: True
 show-failed-logs: True
-keep-going: True
+keep-going: False
 printshellcmds: True
 rerun-incomplete: True
-restart-times: 2
+restart-times: 0
 # Cluster submission
 jobname: "{rule}.{jobid}"              # Provide a custom name for the jobscript that is submitted to the cluster.
 max-jobs-per-second: 10                 #Maximal number of cluster/drmaa jobs per second, default is 10, fractions allowed.
 max-status-checks-per-second: 10       #Maximal number of job status checks per second, default is 10
 jobs: 500                              #Use at most N CPU cluster/cloud jobs in parallel.
-cluster: "sbatch --account=pawsey0012 --partition={resources.partition} --error=${{MYSCRATCH}}/chiara_snakemake/logs/%j.%x.err --output=${{MYSCRATCH}}/chiara_snakemake/logs/%j.%x.out --no-requeue --mem={resources.mem_mb} --time={resources.runtime} --cpus-per-task={threads} --ntasks=1"
+cluster: "sbatch --account=pawsey0012 --partition={resources.partition} --error=${{MYSCRATCH}}/chiara_snakemake/logs/%j.%x.err --output=${{MYSCRATCH}}/chiara_snakemake/logs/%j.%x.out --no-requeue --mem={resources.mem_mb} --time={resources.runtime} --cpus-per-task={threads} --ntasks=1 --export=ALL"
 # For some reason time needs quotes to be read by snakemake
+use-singularity: True
 default-resources:
   - runtime=360 #(mins)
   - mem_mb=90000
