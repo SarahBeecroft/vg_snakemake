@@ -89,7 +89,7 @@ rule extract_ref_fasta:
         set -e -o pipefail
         
         vg paths --extract-fasta \
-        -P {input.paths_list} \
+        -p {input.paths_list} \
         --xg {input.gbz} | \
         sed -e "s/>{params.seqn_prefix}/>/g" > {output}
         """
