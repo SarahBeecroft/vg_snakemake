@@ -77,15 +77,7 @@ rule extract_ref_fasta:
         seqn_prefix=config['seqn_prefix'],
         temp_paths='temp.path_name.{graph}.txt'
     shell:
-        """
-        #rm -f {output} {params.temp_paths}
-        #for CHR in `cat {input.paths_list}`
-        #do
-        #echo $CHR > {params.temp_paths}
-        #vg paths --extract-fasta -p {params.temp_paths} --xg {input.gbz} | sed -e "s/>{params.seqn_prefix}/>/g" >> {output}
-        #done
-        #rm -f {params.temp_paths}
-        
+        """        
         set -e -o pipefail
         
         vg paths --extract-fasta \
