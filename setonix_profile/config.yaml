@@ -54,6 +54,7 @@ set-resources:
   - dv_call_variants:runtime=540
   - dv_call_variants:mem_mb=60000
   - extract_ref_fasta:mem_mb=16000
+  - extract_ref_fasta:runtime=10
   - index_fasta:mem_mb=4000
   - index_fasta:runtime=15
 
