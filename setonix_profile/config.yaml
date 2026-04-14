@@ -34,6 +34,7 @@ set-resources:
   - index_distance:runtime=40
   - index_distance:mem_mb=90000
   - index_minimizer:runtime=20
+  - index_minimizer:mem_mb=81920
   - sv_call_manta:runtime=120
   - sv_call_manta:mem_mb=36000
   - extract_unmapped_reads:mem_mb=16000
