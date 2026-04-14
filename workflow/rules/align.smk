@@ -7,7 +7,7 @@ if len(config['refsynt_fa']) > 0 and len(config['adapters_fa']) > 0 and len(conf
         params:
             wdir="temp_kmc_{sample}",
             ofile="results/{sample}/{sample}",
-            mem_gb=config['kmc_mem_gb'],
+            mem_gb=config['kmc_mem_mb'],
             filel="temp_kmc_filelist_{sample}.txt"
         threads: 8
         benchmark: 'benchmark/{sample}.count_kmer_in_reads.benchmark.tsv'
@@ -17,7 +17,7 @@ if len(config['refsynt_fa']) > 0 and len(config['adapters_fa']) > 0 and len(conf
             echo {input.fq} > {params.filel}
             rm -rf {params.wdir}
             mkdir -p {params.wdir}
-            kmc -k29 -m{params.mem_gb} -okff -t{threads} @{params.filel} {params.ofile} {params.wdir}
+            kmc -k29 -m{params.mem_mb} -okff -t{threads} @{params.filel} {params.ofile} {params.wdir}
             rm -r {params.filel} {params.wdir}
             """
 
@@ -54,7 +54,7 @@ else:
         params:
             wdir="temp_kmc_{sample}",
             ofile="results/{sample}/{sample}",
-            mem_gb=config['kmc_mem_gb'],
+            mem_mb=config['kmc_mem_mb'],
             filel="temp_kmc_filelist_{sample}.txt"
         threads: 8
         benchmark: 'benchmark/{sample}.count_kmer_in_reads.benchmark.tsv'
