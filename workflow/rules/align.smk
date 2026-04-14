@@ -43,7 +43,7 @@ if len(config['refsynt_fa']) > 0 and len(config['adapters_fa']) > 0 and len(conf
             -Z {input.gbz} \
             -d {input.dist} \
             -m {input.min} \
-            -t {threads} | gzip > {output}
+            -t {threads} | pigz -p 8 > {output}
             """
 else:
     rule count_kmer_in_reads:
@@ -92,9 +92,9 @@ else:
             -Z {input.gbz} \
             -d {input.dist} \
             -m {input.min} \
-            -t {threads} | gzip > {output}
+            -t {threads} | pigz -p 8 > {output}
             """
-    
+
 rule sample_haplotypes:
     input: 
         gbz=getgbz(),
@@ -130,7 +130,7 @@ rule surject_reads:
     priority: 3
     params:
         surj_threads=lambda wildcards, threads: max(1, int(threads/2)) if threads < 8 else threads - 4,
-        sort_threads=lambda wildcards, threads: max(1, int(threads/2)) if threads < 8 else 4,
+        sort_threads=lambda wildcards, threads: max(1, int(threads/2)) if threads < 8 else min(8, max(1, threads // 8)),
         sort_dir="temp_bam_sort_{sample}_{graph}",
         seqn_prefix=config['seqn_prefix']
     threads: 8
@@ -141,33 +141,18 @@ rule surject_reads:
         rm -rf {params.sort_dir}
         mkdir -p {params.sort_dir}
 
-        #vg surject \
-        #-F {input.paths_list} \
-        #-x {input.gbz} \
-        #-t {params.surj_threads} \
-        #--sam-output --gaf-input \
-        #--sample {wildcards.sample} \
-        #--read-group "ID:1 LB:lib1 SM:{wildcards.sample} PL:illumina PU:unit1" \
-        #--prune-low-cplx --interleaved --max-frag-len 3000 \
-        #{input.gaf} | \
-        #python3 /opt/scripts/rename_bam_stream.py -f {input.ref_idx} -p "{params.seqn_prefix}" | \
-        #bamleftalign --fasta-reference {input.ref} --compressed | \
-        #samtools sort -m 4G --threads {params.sort_threads} -T {params.sort_dir}/temp \
-        #-O BAM > {output}
-
-
         vg surject \
         -F {input.paths_list} \
         -x {input.gbz} \
-        -t 8 \
+        -t {params.surj_threads} \
         --sam-output --gaf-input \
         --sample {wildcards.sample} \
         --read-group "ID:1 LB:lib1 SM:{wildcards.sample} PL:illumina PU:unit1" \
         --prune-low-cplx --interleaved --max-frag-len 3000 \
         {input.gaf} | \
         python3 /opt/scripts/rename_bam_stream.py -f {input.ref_idx} -p "{params.seqn_prefix}" | \
-        bamleftalign --fasta-reference {input.ref} --compressed | \
-        samtools sort -m 4G --threads {params.sort_threads} -T {params.sort_dir}/temp \
+        bamleftalign --fasta-reference {input.ref} | \
+        samtools sort -m 6G --threads {params.sort_threads} -T {params.sort_dir}/temp \
         -O BAM > {output}
 
         rm -rf {params.sort_dir}
@@ -227,8 +212,8 @@ rule realign_bam:
         """
         rm -rf {params.tmpdir}
         mkdir -p {params.tmpdir}
-        java -Xmx32G \
-          -Xms32G \
+        java -Xmx56G \
+          -Xms56G \
           -XX:+UseG1GC \
           -XX:ParallelGCThreads=4 \
           -jar /opt/abra2/abra2.jar \
