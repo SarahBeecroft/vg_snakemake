@@ -74,3 +74,4 @@ set-threads:
   - extract_ref_fasta=1
   - index_fasta=2
   - index_distance=16
+  - count_kmer_in_reads=16
