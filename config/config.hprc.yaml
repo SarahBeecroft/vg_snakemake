@@ -5,4 +5,4 @@ ref_paths_list: 'config/hprc-v1.1-mc-grch38.paths_list.txt'
 seqn_prefix: "GRCh38#0#"
 gt_min_var_len: 30
 indel_realign_reads: True
-sample_tsv: "config/sample_info.tsv"
+sample_tsv: "/scratch/pawsey0001/sbeecroft/chiara_snakemake/config/sample_info.tsv"
