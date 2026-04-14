@@ -1,4 +1,4 @@
-configfile: "/scratch/pawsey0933/cfolland/vg_snakemake/config/config.hprc.yaml"
+configfile: "/scratch/pawsey0001/sbeecroft/vg_snakemake/config/config.hprc.yaml"
 
 include: "rules/common.smk"
 include: "rules/index.smk"
