@@ -57,7 +57,7 @@ set-resources:
   - index_fasta:runtime=15
 
 set-threads:
-  - sample_haplotypes=16
+  - sample_haplotypes=32
   - realign_bam=32
   - sv_call_manta=24
   - map_short_reads_giraffe=64
