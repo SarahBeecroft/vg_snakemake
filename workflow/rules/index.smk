@@ -102,13 +102,15 @@ rule index_fasta:
 rule index_bam:
     input: "results/{sample}/{sample}.{graph}.bam"
     output: tempCond("results/{sample}/{sample}.{graph}.bam.bai")
+    threads: 4
     benchmark: 'benchmark/{sample}.{graph}.index_bam.benchmark.tsv'
     container: docker_imgs['vgwork']
-    shell: "samtools index -@ 4 {input} {output}"
+    shell: "samtools index -@ {threads} {input} {output}"
 
 rule index_bam_tmp:
     input: "results/{sample}/temp_{sample}.{graph}.bam"
     output: temp("results/{sample}/temp_{sample}.{graph}.bam.bai")
+    threads: 4
     benchmark: 'benchmark/{sample}.{graph}.index_bam.benchmark.tsv'
     container: docker_imgs['vgwork']
-    shell: "samtools index -@ 4 {input} {output}"
+    shell: "samtools index -@ {threads} {input} {output}"
