@@ -29,8 +29,8 @@ set-resources:
   - vgcall:runtime=60
   - realign_bam:runtime=420
   - realign_bam:mem_mb=64000
-  - sample_haplotypes:runtime=30
-  - sample_haplotypes:mem_mb=80000
+  - sample_haplotypes:runtime=20
+  - sample_haplotypes:mem_mb=51200
   - index_distance:runtime=40
   - index_distance:mem_mb=90000
   - index_minimizer:runtime=20
