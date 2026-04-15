@@ -37,7 +37,6 @@ if len(config['refsynt_fa']) > 0 and len(config['adapters_fa']) > 0 and len(conf
             """
             vg giraffe --progress \
             --sample "{wildcards.sample}" \
-            --rescue-algorithm none \
             --output-format gaf \
             -f {input.fq12} -i \
             -Z {input.gbz} \
