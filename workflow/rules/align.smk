@@ -85,7 +85,6 @@ else:
             """
             vg giraffe --progress \
             --sample "{wildcards.sample}" \
-            --rescue-algorithm none \
             --output-format gaf \
             -f {input.fq1} -f {input.fq2} \
             -Z {input.gbz} \
