@@ -83,6 +83,11 @@ else:
         container: docker_imgs['vg']
         shell:
             """
+            cp {input.gbz} /tmp
+            cp {input.dist} /tmp
+            cp {input.dist} /tmp
+            cp {input.min} /tmp
+
             vg giraffe --progress \
             --sample "{wildcards.sample}" \
             --output-format gaf \
@@ -90,7 +95,17 @@ else:
             -Z {input.gbz} \
             -d {input.dist} \
             -m {input.min} \
-            -t {threads} | pigz -p 8 > {output}
+            -t {threads} | pigz -p 16 > /tmp/{sample}.{graph}.gaf.gz
+
+            echo "=== giraffe done, freeing indexes from tmpfs ==="
+            
+            rm -f /tmp/*.gbz /tmp/*.dist /tmp/*.min 
+            ls -lh /tmp/D14-1473.hprc-v1.1-mc-grch38.gaf.gz
+
+            # Move result back to scratch
+            echo "=== moving output to scratch ==="
+            mv /tmp/{sample}.{graph}.gaf.gz results/{sample}/{sample}.{graph}.gaf.gz
+
             """
 
 rule sample_haplotypes:
@@ -156,8 +171,49 @@ rule surject_reads:
         rm -rf {params.sort_dir}
         """
 
-use rule surject_reads as surject_reads_tmp with :
+rule surject_reads_tmp:
+    input:
+        gbz="results/{sample}/{graph}.sample_pg.{sample}.gbz",
+        paths_list=config['ref_paths_list'],
+        gaf="results/{sample}/{sample}.{graph}.gaf.gz",
+        ref=getref(),
+        ref_idx=getrefidx()
     output: temp("results/{sample}/temp_{sample}.{graph}.surj.bam")
+    priority: 3
+    params:
+        surj_threads=lambda wildcards, threads: max(1, int(threads/2)) if threads < 8 else threads - 4,
+        sort_threads=lambda wildcards, threads: max(1, int(threads/2)) if threads < 8 else min(8, max(1, threads // 8)),
+        sort_dir="temp_bam_sort_{sample}_{graph}",
+        seqn_prefix=config['seqn_prefix']
+    threads: 8
+    benchmark: 'benchmark/{sample}.{graph}.surject_reads.benchmark.tsv'
+    container: docker_imgs['vgwork']
+    shell:
+        """
+        rm -rf {params.sort_dir}
+        mkdir -p {params.sort_dir}
+
+        cp {input.paths_list} /tmp
+        cp {input.gbz} /tmp
+        cp {input.gaf} /tmp
+        cp {input.ref_idx} /tmp
+        cp {input.ref} /tmp
+##TODO UPDATE THREADS, RESOURCES IN CONFIG LATER
+        vg surject \
+        -F {input.paths_list} \
+        -x {input.gbz} \
+        -t {params.surj_threads} \
+        --sam-output --gaf-input \
+        --sample {wildcards.sample} \
+        --read-group "ID:1 LB:lib1 SM:{wildcards.sample} PL:illumina PU:unit1" \
+        --prune-low-cplx --interleaved --max-frag-len 3000 \
+        {input.gaf} | \
+        python3 /opt/scripts/rename_bam_stream.py -f {input.ref_idx} -p "{params.seqn_prefix}" | \
+        samtools sort -m 6G --threads {params.sort_threads} -T {params.sort_dir}/temp \
+        -O BAM > {output}
+
+        rm -rf {params.sort_dir}
+        """
 
 rule prepare_target_regions:
     input: 

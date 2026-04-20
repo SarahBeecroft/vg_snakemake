@@ -21,8 +21,8 @@ default-resources:
   - partition=work
 # Job resources
 set-resources:
-  - map_short_reads_giraffe:runtime=720
-  - map_short_reads_giraffe:mem_mb=100000
+  - map_short_reads_giraffe:runtime=120
+  - map_short_reads_giraffe:mem_mb=122880
   - count_kmer_in_reads:mem_mb=100000
   - count_kmer_in_reads:runtime=30
   - vgcall:mem_mb=180000
@@ -39,8 +39,8 @@ set-resources:
   - sv_call_manta:mem_mb=36000
   - extract_unmapped_reads:mem_mb=16000
   - pack:runtime=120
-  - surject_reads_tmp:runtime=960
-  - surject_reads_tmp:mem_mb=100000
+  - surject_reads_tmp:runtime=360
+  - surject_reads_tmp:mem_mb=122880
   - index_bam_tmp:mem_mb=2000
   - index_bam_tmp:runtime=30
   - index_bam:mem_mb=4000
