@@ -1,4 +1,3 @@
-```mermaid
 flowchart TD
     GFA([GFA]) -->|optional| cvt[convert_gfa_to_gbz\nvg gbwt]
     GBZ([Pre-built GBZ]) --> ri[index_r_fullpg\nvg gbwt -r]
@@ -49,4 +48,3 @@ flowchart TD
     dv & dvg --> SNV([SNV+indel VCF])
     manta --> SV([SV VCF])
     mosd --> COV([Coverage BED])
-    ```
